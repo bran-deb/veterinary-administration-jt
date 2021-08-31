@@ -3,7 +3,7 @@ import { contenedorCitas } from '../selectores.js'
 
 
 class UI {
-    imprimirAlertas(mensaje, tipo) {
+    imprimirAlerta(mensaje, tipo) {
         const divMensaje = document.createElement('div')
         divMensaje.textContent = mensaje
         divMensaje.classList.add('text-center', 'alert', 'd-block', 'col-12')
@@ -22,14 +22,14 @@ class UI {
         this.limpiarHTML()
 
         citas.forEach(cita => {
-            const { id, mascota, propietario, telefono, fecha, hora, sintomas } = cita
+            const { mascota, propietario, telefono, fecha, hora, sintomas, id } = cita
             const divCita = document.createElement('div')
             divCita.classList.add('cita', 'p-3')
             divCita.dataset.id = id
 
             const mascotaParrafo = document.createElement('h2')
             mascotaParrafo.classList.add('card-title', 'font-weight-bolder')
-            mascotaParrafo.textContent = mascota
+            mascotaParrafo.innerHTML = `${mascota}`;
 
             const propietarioParrafo = document.createElement('p')
             propietarioParrafo.innerHTML = `
@@ -53,19 +53,19 @@ class UI {
             `
             //boton para eliminar
             const btnEliminar = document.createElement('button')
+            btnEliminar.onclick = () => eliminarCita(id)
             btnEliminar.classList.add('btn', 'btn-danger', 'mr-2')
             btnEliminar.innerHTML = `Eliminar <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>`
-            btnEliminar.onclick = () => eliminarCita(id)
             // boton para editar
             const btnEditar = document.createElement('button')
+            btnEditar.onclick = () => cargarEdicion(cita)
             btnEditar.classList.add('btn', 'btn-info')
             btnEditar.innerHTML = `Editar <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
             <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
             <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
           </svg>`
-            btnEditar.onclick = () => cargarEdicion(cita)
 
             divCita.appendChild(mascotaParrafo)
             divCita.appendChild(propietarioParrafo)
@@ -79,6 +79,7 @@ class UI {
             contenedorCitas.appendChild(divCita)
         })
     }
+
     limpiarHTML() {
         while (contenedorCitas.firstChild) {
             contenedorCitas.removeChild(contenedorCitas.firstChild)

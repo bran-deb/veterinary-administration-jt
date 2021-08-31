@@ -1,20 +1,10 @@
 import Citas from "./clases/Citas.js"
 import UI from "./clases/UI.js"
-import {
-    mascotaInput,
-    propietarioInput,
-    telefonoInput,
-    fechaInput,
-    horaInput,
-    sintomasInput,
-    formulario
-} from './selectores.js'
+import { mascotaInput, propietarioInput, telefonoInput, horaInput, fechaInput, sintomasInput, formulario } from './selectores.js';
 //Instancias
 const ui = new UI()
-const administarCitas = new Citas()
+const administrarCitas = new Citas()
 
-
-let editando
 
 //Objects
 const citaObj = {
@@ -26,11 +16,13 @@ const citaObj = {
     sintomas: ''
 }
 
+let editando = false
+
 //agrega datos de cita
 export function datosCita(e) {
     //para evitar llenar el objeto uno por uno
     //obtenemos el nombre del evento con .name
-    citaObj[e.target.name] = e.target.value
+    citaObj[e.target.name] = e.target.value;
 }
 
 //valida y agrega ua nueva cita a la clase de citas
@@ -40,37 +32,38 @@ export function nuevaCita(e) {
     const { mascota, propietario, telefono, hora, fecha, sintomas } = citaObj
     // validar
     if ((mascota && propietario && telefono && hora && fecha && sintomas) === '') {
-        ui.imprimirAlertas('Todos los campos son Obligatorios', 'error')
+        ui.imprimirAlerta('Todos los campos son Obligatorios', 'error')
         return
     }
     if (editando) {
-        ui.imprimirAlertas('Se adito correctamente')
-
         //pasar el objeto de la cita a edicion
-        administarCitas.editarCita({ ...citaObj })
+        administrarCitas.editarCita({ ...citaObj })
+
+        ui.imprimirAlerta('Se edito correctamente')
+
         //regresar el boton al estado original
-        formulario.querySelector('button[type="submit"]').textContent = 'crear Cambios'
+        formulario.querySelector('button[type="submit"]').textContent = 'crear Cita'
         // quitar modo edicion
         editando = false
     } else {
         //generar un id
         citaObj.id = Date.now()
         //crea nueva cita usando unaa copia de citaObj
-        administarCitas.agregarCita({ ...citaObj })
+        administrarCitas.agregarCita({ ...citaObj })
         //mensaje de agregado correctamente
-        ui.imprimirAlertas('Se agrego correctamente')
+        ui.imprimirAlerta('Se agrego correctamente')
     }
 
+    //mostrarHTML
+    ui.imprimirCitas(administrarCitas)
     // reiniciamos objeto para la validacion
     reiniciarObj()
     // reiniciamos formulario
     formulario.reset()
-
-    //mostrarHTML
-    ui.imprimirCitas(administarCitas)
 }
 
 export function reiniciarObj() {
+
     citaObj.mascota = '',
         citaObj.propietario = '',
         citaObj.telefono = '',
@@ -81,23 +74,24 @@ export function reiniciarObj() {
 
 export function eliminarCita(id) {
     // eliminar la cita
-    administarCitas.eliminarCita(id)
+    administrarCitas.eliminarCita(id)
     //muestre un mensaje
-    ui.imprimirAlertas('Mensaje eliminado')
+    ui.imprimirAlerta('Mensaje eliminado')
     //refrescar las citas
-    ui.imprimirCitas(administarCitas)
+    ui.imprimirCitas(administrarCitas)
 }
 
 //carga los datos y el modo edicion
 export function cargarEdicion(cita) {
-    const { id, mascota, propietario, telefono, hora, fecha, sintomas } = cita
+    const { mascota, propietario, telefono, hora, fecha, sintomas, id } = cita
     //llenar inputs
     mascotaInput.value = mascota
     propietarioInput.value = propietario
     telefonoInput.value = telefono
-    hora.value = hora
+    horaInput.value = hora
     fechaInput.value = fecha
     sintomasInput.value = sintomas
+
 
     //llenar el objeto de citaObj
     citaObj.mascota = mascota
@@ -109,7 +103,7 @@ export function cargarEdicion(cita) {
     citaObj.id = id
 
     //cambiar texto de boton
-    formulario.querySelector('button[type="submit"]').textContent = 'Guardar Cambios'
+    formulario.querySelector('button[type="submit"]').textContent = 'Guardar Cambios';
 
     editando = true
 }
