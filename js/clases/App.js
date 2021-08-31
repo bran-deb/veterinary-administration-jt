@@ -11,6 +11,7 @@ import {
 
 
 class App {
+
     constructor() {
         this.initApp()
     }
@@ -25,3 +26,4 @@ class App {
 
     }
 }
+export default App
